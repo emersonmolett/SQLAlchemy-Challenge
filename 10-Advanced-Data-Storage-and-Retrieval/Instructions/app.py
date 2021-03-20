@@ -7,20 +7,24 @@ from sqlalchemy import create_engine, func
 
 from flask import Flask, jsonify
 
+import datetime as dt 
+
+from sqlalchemy.pool import StaticPool 
 
 #################################################
 # Database Setup
 #################################################
-engine = create_engine("sqlite:///titanic.sqlite")
-
+engine = create_engine("sqlite:///Resources/hawaii.sqlite")
+ 
 # reflect an existing database into a new model
 Base = automap_base()
 # reflect the tables
 Base.prepare(engine, reflect=True)
 
 # Save reference to the table
-Passenger = Base.classes.passenger
+Measurement = Base.classes.passenger
 
+Station = Base.classes.station 
 #################################################
 # Flask Setup
 #################################################
