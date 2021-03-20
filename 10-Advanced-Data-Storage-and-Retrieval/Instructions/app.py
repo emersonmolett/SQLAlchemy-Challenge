@@ -78,6 +78,18 @@ def precipitation():
     precipitation_date_list = dict(precipitation_date)
     return jsonify(precipitation_date_list)
     
+# Station Route 
+@app.route("/api/v1.0/stations")
+    def stations():
+      station_all = session.query(Station.station, Station.name).all()
+      station_list = list(station_all)  
+      return jsonify(station_list)
+
+
+
+
+
+
 
 
 @app.route("/api/v1.0/names")
