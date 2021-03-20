@@ -64,6 +64,20 @@ def welcome():
 </ul>
 </html> 
 """"
+# Precipitation Route
+@app.route("ap1/v1.0/precipitation")
+
+def precipitation():
+    #Convert the query results to a dictionary using date as the key and prcp as the value.
+    one_year_from_last_date = dt.date(2017,8,23) - dt.timedelta(days=365)
+
+    precipitation_date = session.query(Measurement.date, Measurement.prcp).\
+        filter(Measurement.date >= one_year_from_last_date).\
+        order_by(Measurement.date).all()
+
+    precipitation_date_list = dict(precipitation_date)
+    return jsonify(precipitation_date_list)
+    
 
 
 @app.route("/api/v1.0/names")
