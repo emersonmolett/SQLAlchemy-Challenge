@@ -86,10 +86,15 @@ def precipitation():
       return jsonify(station_list)
 
 
-
-
-
-
+# TOBs Route
+@app.route("/api/v1.0/tobs")
+def tobs():
+    one_year_from_last_date = dt.date(2017,8,23) - dt.timedelta(days=365)
+    temperature_observation_data = session.query(Measurement.date, Measurement.tobs).\
+        filter(Measurement.date >= one_year_from_last_date).\
+        order_by(Measurement.date).all()
+    temperature_observation_data_list = list(temperature_observation_data)
+    return jsonify(temperature_observation_data_list)
 
 
 @app.route("/api/v1.0/names")
