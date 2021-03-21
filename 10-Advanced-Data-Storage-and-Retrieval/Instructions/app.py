@@ -96,6 +96,25 @@ def tobs():
     temperature_observation_data_list = list(temperature_observation_data)
     return jsonify(temperature_observation_data_list)
 
+# Start Day Route
+@app.route("/api/v1/0/<start")
+def start_day(start):
+        start_day = session.query(Measurement.date,func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
+            filter(Measurement.date >= start).\
+            group_by(Measurement.date).all()
+            start_day_list = list(start_day)
+            return jsonify(start_day_list)
+            
+
+
+
+
+
+
+
+
+
+
 
 @app.route("/api/v1.0/names")
 def names():
