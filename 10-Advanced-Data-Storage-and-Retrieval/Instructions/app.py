@@ -102,10 +102,19 @@ def start_day(start):
         start_day = session.query(Measurement.date,func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
             filter(Measurement.date >= start).\
             group_by(Measurement.date).all()
-            start_day_list = list(start_day)
-            return jsonify(start_day_list)
-            
+        start_day_list = list(start_day)
+        return jsonify(start_day_list)
 
+
+# Start & End Route        
+@app.route("/api/v1.0/<start>/<end>")
+def start_end_day(start, end):
+    start_end_day = session.query(Measurement.date, func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
+            filter(Measurement.date >= start).\
+            filter(Measurement.date <= end).\
+            group_by(Measurement.date).all()
+    start_end_day_list = list(start_end_day)
+    return jsonify
 
 
 
