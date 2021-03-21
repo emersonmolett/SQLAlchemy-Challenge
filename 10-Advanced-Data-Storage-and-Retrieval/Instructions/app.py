@@ -9,7 +9,8 @@ from flask import Flask, jsonify
 
 import datetime as dt 
 
-from sqlalchemy.pool import StaticPool 
+from sqlalchemy.pool import StaticPool
+
 
 #################################################
 # Database Setup
@@ -63,7 +64,7 @@ def welcome():
    <li><a href="api/v1.0/2017-08-18/2017-08-18">/api/v1/0/2017-08-18/2017-08-18</a></li>
 </ul>
 </html> 
-""""
+"""""
 # Precipitation Route
 @app.route("ap1/v1.0/precipitation")
 
@@ -71,7 +72,7 @@ def precipitation():
     #Convert the query results to a dictionary using date as the key and prcp as the value.
     one_year_from_last_date = dt.date(2017,8,23) - dt.timedelta(days=365)
 
-    precipitation_date = session.query(Measurement.date, Measurement.prcp).\
+    precipitation_date = Session.query(Measurement.date, Measurement.prcp).\
         filter(Measurement.date >= one_year_from_last_date).\
         order_by(Measurement.date).all()
 
@@ -80,8 +81,8 @@ def precipitation():
     
 # Station Route 
 @app.route("/api/v1.0/stations")
-    def stations():
-      station_all = session.query(Station.station, Station.name).all()
+def stations():
+      station_all = Session.query(Station.station, Station.name).all()
       station_list = list(station_all)  
       return jsonify(station_list)
 
@@ -90,7 +91,7 @@ def precipitation():
 @app.route("/api/v1.0/tobs")
 def tobs():
     one_year_from_last_date = dt.date(2017,8,23) - dt.timedelta(days=365)
-    temperature_observation_data = session.query(Measurement.date, Measurement.tobs).\
+    temperature_observation_data = Session.query(Measurement.date, Measurement.tobs).\
         filter(Measurement.date >= one_year_from_last_date).\
         order_by(Measurement.date).all()
     temperature_observation_data_list = list(temperature_observation_data)
@@ -99,7 +100,7 @@ def tobs():
 # Start Day Route
 @app.route("/api/v1/0/<start")
 def start_day(start):
-        start_day = session.query(Measurement.date,func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
+        start_day = Session.query(Measurement.date,func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
             filter(Measurement.date >= start).\
             group_by(Measurement.date).all()
         start_day_list = list(start_day)
@@ -109,65 +110,13 @@ def start_day(start):
 # Start & End Route        
 @app.route("/api/v1.0/<start>/<end>")
 def start_end_day(start, end):
-    start_end_day = session.query(Measurement.date, func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
+        start_end_day = Session.query(Measurement.date, func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
             filter(Measurement.date >= start).\
             filter(Measurement.date <= end).\
             group_by(Measurement.date).all()
-    start_end_day_list = list(start_end_day)
-    return jsonify
+        start_end_day_list = list(start_end_day)
+        return jsonify(start_end_day_list)
 
 
-
-
-
-
-
-
-
-
-@app.route("/api/v1.0/names")
-def names():
-    # Create our session (link) from Python to the DB
-    session = Session(engine)
-
-    """Return a list of all passenger names"""
-    # Query all passengers
-    results = session.query(Passenger.name).all()
-
-    session.close()
-
-    # Convert list of tuples into normal list
-    all_names = list(np.ravel(results))
-
-    return jsonify(all_names)
-
-
-@app.route("/api/v1.0/passengers")
-def passengers():
-    # Create our session (link) from Python to the DB
-    session = Session(engine)
-
-    """Return a list of passenger data including the name, age, and sex of each passenger"""
-    # Query all passengers
-    results = session.query(Passenger.name, Passenger.age, Passenger.sex).all()
-
-    session.close()
-
-    # Create a dictionary from the row data and append to a list of all_passengers
-    all_passengers = []
-    for name, age, sex in results:
-        passenger_dict = {}
-        passenger_dict["name"] = name
-        passenger_dict["age"] = age
-        passenger_dict["sex"] = sex
-        all_passengers.append(passenger_dict)
-
-    return jsonify(all_passengers)
-
-# @app.route("/api/v1.0/time_series/<start_date>")
-# def passengers(start_date):
-    
-
-#     return jsonify(all_passengers)
 if __name__ == '__main__':
     app.run(debug=True)
