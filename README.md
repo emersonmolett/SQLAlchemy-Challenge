@@ -31,7 +31,7 @@ The statis route accomplished:
 <li>Makes the JSONified data for the most active station for the prior 12-months</li>
 
 </br>
-API Dynamic Route:
+API Dynamic Route:</br>
 A dynamic route was generated that:
 <li>Accepts the state date as a parameter from the URL</li>
 <li>Returns the minimum, maximum, and average temperatures calculated from the given start date to the end of the dataset </li>
